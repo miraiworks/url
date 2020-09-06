@@ -77,19 +77,6 @@ if (NOT CMAKE_SOURCE_DIR STREQUAL PROJECT_SOURCE_DIR)
 endif()
 
 # Install
-include(CMakePackageConfigHelpers)
-include(GNUInstallDirs)
-
-configure_package_config_file(
-        "${PROJECT_SOURCE_DIR}/cmake/${PROJECT_NAME}-config.cmake.in"
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-        INSTALL_DESTINATION "share/cmake/${PROJECT_NAME}")
-
-write_basic_package_version_file(
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
-        COMPATIBILITY SameMajorVersion
-        ARCH_INDEPENDENT)
-
 set(skyr_TARGETS skyr-url)
 if (skyr_ENABLE_FILESYSTEM_FUNCTIONS)
     list(APPEND skyr_TARGETS skyr-filesystem)
@@ -99,20 +86,14 @@ if (skyr_ENABLE_JSON_FUNCTIONS)
 endif()
 
 install(TARGETS ${skyr_TARGETS}
-        EXPORT ${PROJECT_NAME}-targets
+        EXPORT skyr-url-config
         INCLUDES DESTINATION "${CMAKE_INSTALL_DATADIR}"
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
-
-install(EXPORT ${PROJECT_NAME}-targets
-        DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}"
+install(EXPORT skyr-url-config
+        DESTINATION share/skyr-url
         NAMESPACE skyr::
-        FILE "${PROJECT_NAME}-targets.cmake")
-
-install(FILES
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config-version.cmake"
-        "${PROJECT_BINARY_DIR}/${PROJECT_NAME}-config.cmake"
-        DESTINATION "${CMAKE_INSTALL_DATADIR}/cmake/${PROJECT_NAME}")
+        EXPORT_LINK_INTERFACE_LIBRARIES)
 
 install(
         DIRECTORY
